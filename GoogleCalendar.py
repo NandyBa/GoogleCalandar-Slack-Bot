@@ -80,3 +80,16 @@ class GoogleCalendar():
 		aujourd_hui = datetime.now()
 		aujourd_hui = aujourd_hui.strftime("%d/%m/%Y")
 		return self.récupérér_les_évènements_ayant_lieu_à_cette_date(aujourd_hui)
+
+	
+	def récupérer_la_listes_des_calendriers(self):
+		calendriers = []
+		page_token = None
+		while True:
+			calendar_list = self.service.calendarList().list(pageToken=page_token).execute()
+			for calendar_list_entry in calendar_list['items']:
+				calendriers.append(calendar_list_entry)
+				page_token = calendar_list.get('nextPageToken')
+			if not page_token:
+				break
+		return calendriers

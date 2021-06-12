@@ -4,6 +4,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
+from datetime import datetime
+
 class GoogleCalendar():
 	"""
 		Classe permettant d'intéragir avec l'API de Google Calendar
@@ -31,3 +33,23 @@ class GoogleCalendar():
 				token.write(creds.to_json())
 
 		self.service = build('calendar', 'v3', credentials=creds)
+
+
+	def récupérér_les_prochains_évènements(self, calendarId='primary', nombre_d_évènements=10):
+		"""
+			Permet de récupérer les i prochains évènements
+			d'un calendrier.
+		"""
+		now = datetime.datetime.utcnow()
+		timeMin = now.isoformat() + 'Z' # 'Z' indicates UTC time
+
+		events_result = self.service.events().list(
+				calendarId=calendarId,
+				timeMin=timeMin,
+				maxResults=nombre_d_évènements, singleEvents=True,
+				orderBy='startTime'
+			).execute()
+
+		events = events_result.get('items', [])
+
+		return events

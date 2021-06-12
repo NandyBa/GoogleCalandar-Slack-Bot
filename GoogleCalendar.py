@@ -5,6 +5,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 class GoogleCalendar():
 	"""
@@ -47,6 +48,27 @@ class GoogleCalendar():
 				calendarId=calendarId,
 				timeMin=timeMin,
 				maxResults=nombre_d_évènements, singleEvents=True,
+				orderBy='startTime'
+			).execute()
+
+		events = events_result.get('items', [])
+
+		return events
+
+	def récupérér_les_évènements_ayant_lieu_à_cette_date(self, date, calendarId='primary'):
+
+		date = datetime.strptime(date, '%d/%m/%Y')
+
+		timeMin = date.isoformat() + 'Z' # 'Z' indicates UTC time
+		timeMax = ( date + relativedelta(days=1) ).isoformat() + 'Z' # 'Z' indicates UTC time
+
+		print('Getting the upcoming 10 events')
+		
+		events_result = self.service.events().list(
+				calendarId=calendarId,
+				timeMin=timeMin,
+				timeMax=timeMax,
+				singleEvents=True,
 				orderBy='startTime'
 			).execute()
 

@@ -75,3 +75,8 @@ class GoogleCalendar():
 		events = events_result.get('items', [])
 
 		return events
+
+	def récupérér_les_évènements_ayant_lieu_aujourdhui(self, calendarId='primary'):
+		aujourd_hui = datetime.now()
+		aujourd_hui = aujourd_hui.strftime("%d/%m/%Y")
+		return self.récupérér_les_évènements_ayant_lieu_à_cette_date(aujourd_hui)
